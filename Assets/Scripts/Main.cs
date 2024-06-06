@@ -55,6 +55,8 @@ public class Main : MonoBehaviour
         RunSimulation();
     }
 
+
+    //call to run the simulation for one time step
     private void RunSimulation()
     {
         foreach (Planets planet in plants)
