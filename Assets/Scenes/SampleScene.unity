@@ -261,8 +261,9 @@ MonoBehaviour:
   BaseBody: {fileID: 704612052096421442, guid: 4b79448a31b70534989e773ca2c11a2f, type: 3}
   DistanceScale: 1000000000
   SizeScale: 0.1
-  TimeScale: 0.0001
-  TimeStep: 0.0002
+  TimeScale: 0.000001
+  TimeStep: 0.004
+  itterations_per_fixed_update: 100
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

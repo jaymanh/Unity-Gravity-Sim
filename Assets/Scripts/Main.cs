@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using PlanetsInfo;
+using System.Threading.Tasks;
 
 public class Main : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class Main : MonoBehaviour
     public double TimeScale = 0.0001;
     public float TimeStep = 0.0002f;
     private int Voffset = 100000000;
+    public int itterations_per_fixed_update = 100;
 
     // Start is called before the first frame update
     void Start()
@@ -52,21 +54,23 @@ public class Main : MonoBehaviour
 
     private void FixedUpdate()
     {
-        RunSimulation();
+        for(int i = 0; i < itterations_per_fixed_update; i++){
+            RunSimulation();
+        }
     }
 
 
     //call to run the simulation for one time step
     private void RunSimulation()
     {
-        foreach (Planets planet in plants)
+        foreach(Planets planet in plants)
         {
             double[] acceleration = AverageAccelerationBetweenAll(planet);
             planet.VelocityX += acceleration[0] * TimeScale;
             planet.VelocityY += acceleration[1] * TimeScale;
             planet.VelocityZ += acceleration[2] * TimeScale;
             UpdatePosition(planet);
-        }
+        };
     }
 
     void MoveGameObjects(Planets currentp)
@@ -108,45 +112,45 @@ public class Main : MonoBehaviour
     }
 
     double[] AverageAccelerationBetweenAll(Planets planet)
-{
-    double[] acceleration = new double[3];
-    for (int i = 0; i < plants.Length; i++)
     {
-        Planets otherPlanet = plants[i];
-        if (otherPlanet.Name != planet.Name)
+        double[] acceleration = new double[3];
+        for (int i = 0; i < plants.Length; i++)
         {
-            double gravity = FindGravity(planet, otherPlanet);
-            double[] direction = FindDirection(planet, otherPlanet);
-            double accelerationBetween = FindAcceleration(gravity, planet.Mass);
-            acceleration[0] += accelerationBetween * direction[0];
-            acceleration[1] += accelerationBetween * direction[1];
-            acceleration[2] += accelerationBetween * direction[2];
+            Planets otherPlanet = plants[i];
+            if (otherPlanet.Name != planet.Name)
+            {
+                double gravity = FindGravity(planet, otherPlanet);
+                double[] direction = FindDirection(planet, otherPlanet);
+                double accelerationBetween = FindAcceleration(gravity, planet.Mass);
+                acceleration[0] += accelerationBetween * direction[0];
+                acceleration[1] += accelerationBetween * direction[1];
+                acceleration[2] += accelerationBetween * direction[2];
+            }
         }
+        double normalizationFactor = 1.0 / (plants.Length - 1);
+        acceleration[0] *= normalizationFactor;
+        acceleration[1] *= normalizationFactor;
+        acceleration[2] *= normalizationFactor;
+        return acceleration;
     }
-    double normalizationFactor = 1.0 / (plants.Length - 1);
-    acceleration[0] *= normalizationFactor;
-    acceleration[1] *= normalizationFactor;
-    acceleration[2] *= normalizationFactor;
-    return acceleration;
-}
 
-double FindGravity(Planets planet1, Planets planet2)
-{
-    double distanceSquared = Mathf.Pow((float)(planet1.PositionX - planet2.PositionX), 2) +
-                             Mathf.Pow((float)(planet1.PositionY - planet2.PositionY), 2) +
-                             Mathf.Pow((float)(planet1.PositionZ - planet2.PositionZ), 2);
-    double gravity = G * planet1.Mass * planet2.Mass / distanceSquared;
-    return gravity;
-}
+    double FindGravity(Planets planet1, Planets planet2)
+    {
+        double distanceSquared = Mathf.Pow((float)(planet1.PositionX - planet2.PositionX), 2) +
+                                Mathf.Pow((float)(planet1.PositionY - planet2.PositionY), 2) +
+                                Mathf.Pow((float)(planet1.PositionZ - planet2.PositionZ), 2);
+        double gravity = G * planet1.Mass * planet2.Mass / distanceSquared;
+        return gravity;
+    }
 
 // Precompute gravitational constant
-const double G = 6.674 * 1e-11;
+    const double G = 6.674 * 1e-11;
 
 
-    void UpdatePosition(Planets planet)
-    {
-        planet.PositionX += planet.VelocityX * TimeScale;
-        planet.PositionY += planet.VelocityY * TimeScale;
-        planet.PositionZ += planet.VelocityZ * TimeScale;
+        void UpdatePosition(Planets planet)
+        {
+            planet.PositionX += planet.VelocityX * TimeScale;
+            planet.PositionY += planet.VelocityY * TimeScale;
+            planet.PositionZ += planet.VelocityZ * TimeScale;
+        }
     }
-}
