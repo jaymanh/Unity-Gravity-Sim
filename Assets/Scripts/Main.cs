@@ -80,6 +80,8 @@ public class Main : MonoBehaviour
             
 
             currentgb.transform.position = new Vector3((float)currentp.PositionX / DistanceScale, (float)currentp.PositionY / DistanceScale, (float)currentp.PositionZ / DistanceScale);
+            float rootScale = Mathf.Sqrt((float)currentp.Radius) * SizeScale;
+            currentgb.transform.localScale = new Vector3(rootScale, rootScale, rootScale);
         }
 
     void SpawnBody(Planets Spawn)
@@ -89,9 +91,10 @@ public class Main : MonoBehaviour
         Color randomColor = Random.ColorHSV(0f, 1f, 0.5f, 1f, 1f, 1f);
         Body.GetComponent<Renderer>().material.color = randomColor;
 
+        
         // Use a logarithmic scale for the size
-        float logScale = Mathf.Log((float)Spawn.Radius) * SizeScale;
-        Body.transform.localScale = new Vector3(logScale, logScale, logScale);
+        float rootScale = Mathf.Sqrt((float)Spawn.Radius) * SizeScale;
+        Body.transform.localScale = new Vector3(rootScale, rootScale, rootScale);
         Body.name = Spawn.Name;
 
         //Debug.Log("Spawned: " + Spawn.Name + " at " + Spawn.PositionX + ", " + Spawn.PositionY + ", " + Spawn.PositionZ + " with mass: " + Spawn.Mass + " and radius: " + Spawn.Radius + " and velocity: " + Spawn.VelocityX + ", " + Spawn.VelocityY + ", " + Spawn.VelocityZ);
